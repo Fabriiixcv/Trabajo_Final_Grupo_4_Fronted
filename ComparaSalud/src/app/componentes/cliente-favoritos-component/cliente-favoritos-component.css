@@ -1,0 +1,187 @@
+/* Pestañas (como en el TP: Medicamentos / Farmacias con contador) */
+.barra-pestanas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.pestanas {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--cs-sombra);
+}
+.pestana {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #4b5563;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.pestana mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #9ca3af;
+}
+.pestana:hover {
+  background: #f3f4f6;
+}
+.pestana[aria-selected='true'] {
+  background: var(--cs-degradado);
+  color: #fff;
+  box-shadow: var(--cs-sombra-boton);
+}
+.pestana[aria-selected='true'] mat-icon {
+  color: #fff;
+}
+.pestana .n {
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  font-size: 12px;
+  color: #6b7280;
+}
+.pestana[aria-selected='true'] .n {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+.buscar {
+  width: 320px;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 12px;
+}
+
+/* Tarjetas */
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+}
+.tarjeta mat-card-content {
+  flex: 1;
+  padding: 20px 20px 8px;
+}
+.mejor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #d1fae5;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ecfdf5 0%, #eff6ff 100%);
+}
+.mejor p {
+  margin: 0;
+}
+.mejor-titulo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #047857;
+}
+.mejor-titulo mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+.mejor-farmacia {
+  margin: 2px 0 6px !important;
+  font-size: 14px;
+  color: #374151;
+}
+.mejor-precio {
+  font-size: 26px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.sin-ofertas {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f9fafb;
+  color: #9ca3af;
+  font-size: 14px;
+}
+.datos {
+  margin: 14px 0 4px;
+  font-size: 14px;
+  color: #4b5563;
+}
+.datos p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+.datos mat-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #9ca3af;
+}
+.acciones {
+  padding: 8px 16px 16px;
+}
+.acciones.dos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.ancho {
+  width: 100%;
+  height: 44px;
+}
+.acciones.dos .degradado,
+.ver {
+  height: 44px;
+}
+.ver {
+  --mat-button-outlined-label-text-color: #2563eb;
+  --mat-button-outlined-outline-color: #dbeafe;
+}
+.vacio p {
+  max-width: 360px;
+  margin: 12px auto 20px;
+}
+@media (max-width: 600px) {
+  .pestanas {
+    width: 100%;
+  }
+  .pestana {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 8px;
+  }
+  .buscar {
+    width: 100%;
+  }
+}
+@media (max-width: 400px) {
+  .acciones.dos {
+    grid-template-columns: 1fr;
+  }
+}

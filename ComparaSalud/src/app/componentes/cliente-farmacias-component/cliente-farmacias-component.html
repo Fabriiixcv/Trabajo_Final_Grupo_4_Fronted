@@ -1,0 +1,176 @@
+<div class="pagina aparece">
+  <!-- Cabecera: buscador en vivo + cifras -->
+  <mat-card class="cs-card hero-pagina fondo-hero">
+    <div class="hero-grid">
+      <div>
+        <p class="kicker"><mat-icon>storefront</mat-icon> Farmacias</p>
+        <h1>Encuentra la farmacia que te queda mejor</h1>
+        <p class="subtitulo">Busca por nombre o distrito, mira su horario y abre la ruta en el mapa.</p>
+
+        <mat-form-field appearance="outline" class="campo-hero" subscriptSizing="dynamic">
+          <mat-label>Nombre, distrito o dirección</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput autocomplete="off" [value]="texto()" (input)="texto.set($any($event.target).value)" />
+          @if (texto()) {
+            <button matSuffix mat-icon-button type="button" aria-label="Borrar búsqueda" (click)="texto.set('')">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="stats">
+        <div class="stat verde">
+          <mat-icon>store</mat-icon>
+          <b>{{ todas().length }}</b>
+          <span>farmacias activas</span>
+        </div>
+        <div class="stat">
+          <mat-icon>location_on</mat-icon>
+          <b>{{ distritos().length }}</b>
+          <span>distritos</span>
+        </div>
+        <div class="stat morado">
+          <mat-icon>inventory_2</mat-icon>
+          <b>{{ ofertas().length }}</b>
+          <span>productos con stock</span>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+
+  @if (cargando()) {
+    <mat-progress-bar mode="indeterminate" class="progreso" />
+  }
+
+  @if (todas().length) {
+    <!-- Filtros rápidos por distrito -->
+    <div class="chips-filtro" role="group" aria-label="Filtrar por distrito">
+      <button type="button" class="chip-filtro" [attr.aria-pressed]="!distrito()" (click)="distrito.set('')">
+        Todos <span class="n">{{ todas().length }}</span>
+      </button>
+      @for (d of distritos(); track d.nombre) {
+        <button type="button" class="chip-filtro" [attr.aria-pressed]="distrito() === d.nombre" (click)="elegirDistrito(d.nombre)">
+          <mat-icon>location_on</mat-icon> {{ d.nombre }} <span class="n">{{ d.n }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="herramientas">
+      <p class="resumen">
+        <b>{{ visibles().length }}</b> {{ visibles().length === 1 ? 'farmacia' : 'farmacias' }}
+        @if (distrito()) {
+          en {{ distrito() }}
+        }
+      </p>
+      <div class="controles">
+        <button
+          type="button"
+          class="chip-filtro"
+          [attr.aria-pressed]="soloFavoritas()"
+          (click)="soloFavoritas.set(!soloFavoritas())"
+        >
+          <mat-icon class="relleno">favorite</mat-icon> Mis favoritas <span class="n">{{ favoritas().size }}</span>
+        </button>
+        <mat-form-field appearance="outline" class="orden" subscriptSizing="dynamic">
+          <mat-label>Ordenar por</mat-label>
+          <mat-select [value]="orden()" (selectionChange)="orden.set($event.value)">
+            <mat-option value="nombre">Nombre (A–Z)</mat-option>
+            <mat-option value="calificacion">Mejor calificadas</mat-option>
+            <mat-option value="productos">Más productos con stock</mat-option>
+          </mat-select>
+        </mat-form-field>
+        @if (hayFiltros()) {
+          <button mat-button type="button" class="limpiar-filtros" (click)="limpiarFiltros()">
+            <mat-icon>filter_alt_off</mat-icon> Limpiar filtros
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  @if (!cargando()) {
+    @if (visibles().length) {
+      <div class="rejilla">
+        @for (f of visibles(); track f.id) {
+          @let cal = calificaciones().get(f.id!);
+          <mat-card class="cs-card con-hover tarjeta">
+            <mat-card-content>
+              <div class="cabecera">
+                <span class="icono verde"><mat-icon>store</mat-icon></span>
+                <div class="titulos">
+                  <h3>
+                    @for (p of partes(f.nombre); track $index) {
+                      <span [class.resaltado]="p.m">{{ p.t }}</span>
+                    }
+                  </h3>
+                  <span class="etiqueta">{{ f.distrito }}</span>
+                </div>
+                <button
+                  mat-icon-button
+                  type="button"
+                  [matTooltip]="favoritas().has(f.id!) ? 'Quitar de favoritos' : 'Guardar en favoritos'"
+                  [attr.aria-label]="favoritas().has(f.id!) ? 'Quitar de favoritos' : 'Guardar en favoritos'"
+                  (click)="toggleFavorita(f.id!)"
+                >
+                  <mat-icon [class.relleno]="favoritas().has(f.id!)" [class.favorito-activo]="favoritas().has(f.id!)">favorite</mat-icon>
+                </button>
+              </div>
+
+              <div class="valoracion">
+                @if (cal && cal.total) {
+                  <span class="estrellas-fila" [attr.aria-label]="'Calificación ' + cal.promedio + ' de 5'">
+                    @for (n of estrellas; track n) {
+                      <mat-icon class="estrella relleno" [class.apagada]="n > redondear(cal.promedio)">star</mat-icon>
+                    }
+                  </span>
+                  <b>{{ cal.promedio?.toFixed(1) }}</b>
+                  <span class="gris">({{ cal.total }} {{ cal.total === 1 ? 'opinión' : 'opiniones' }})</span>
+                } @else {
+                  <span class="gris">Aún sin calificaciones</span>
+                }
+              </div>
+
+              <div class="datos">
+                <p><mat-icon>location_on</mat-icon> {{ f.direccion }}</p>
+                <p><mat-icon>schedule</mat-icon> {{ f.horario }}</p>
+                <p><mat-icon>call</mat-icon> {{ f.telefono }}</p>
+              </div>
+
+              @let n = productos().get(f.id!) ?? 0;
+              <div class="productos" [class.sin]="!n">
+                <mat-icon>inventory_2</mat-icon>
+                @if (n) {
+                  <span><b>{{ n }}</b> {{ n === 1 ? 'producto' : 'productos' }} con stock</span>
+                } @else {
+                  <span>Sin productos con stock por ahora</span>
+                }
+              </div>
+            </mat-card-content>
+
+            <mat-card-actions class="acciones">
+              <button mat-stroked-button type="button" class="ver" (click)="verDetalle(f.id!)">
+                <mat-icon>star</mat-icon> Calificaciones
+              </button>
+              <a mat-flat-button class="degradado llegar" [href]="urlMapa(f)" target="_blank" rel="noopener">
+                <mat-icon>directions</mat-icon> Cómo llegar
+              </a>
+            </mat-card-actions>
+          </mat-card>
+        }
+      </div>
+    } @else {
+      <div class="vacio">
+        <mat-icon>storefront</mat-icon>
+        @if (hayFiltros()) {
+          <p>No hay farmacias con esos filtros. Prueba con otra palabra o quita alguno.</p>
+          <button mat-flat-button type="button" class="degradado" (click)="limpiarFiltros()">
+            <mat-icon>filter_alt_off</mat-icon> Limpiar filtros
+          </button>
+        } @else {
+          <p>Todavía no hay farmacias activas.</p>
+        }
+      </div>
+    }
+  }
+</div>

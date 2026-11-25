@@ -1,0 +1,89 @@
+@if (error()) {
+  <div class="dialogo-cab">
+    <span class="icono"><mat-icon>medication</mat-icon></span>
+    <div class="titulos"><h2 mat-dialog-title>Detalle del medicamento</h2></div>
+    <button mat-icon-button type="button" mat-dialog-close aria-label="Cerrar"><mat-icon>close</mat-icon></button>
+  </div>
+  <mat-dialog-content><p class="error">{{ error() }}</p></mat-dialog-content>
+} @else if (!medicamento() || !reporte()) {
+  <div class="dialogo-cab">
+    <span class="icono"><mat-icon>medication</mat-icon></span>
+    <div class="titulos"><h2 mat-dialog-title>Detalle del medicamento</h2></div>
+    <button mat-icon-button type="button" mat-dialog-close aria-label="Cerrar"><mat-icon>close</mat-icon></button>
+  </div>
+  <mat-dialog-content><mat-progress-bar mode="indeterminate" /></mat-dialog-content>
+} @else {
+  @let m = medicamento()!;
+  @let r = reporte()!;
+
+  <div class="dialogo-cab">
+    <span class="icono"><mat-icon>medication</mat-icon></span>
+    <div class="titulos">
+      <h2 mat-dialog-title>{{ m.nombreComercial || m.nombre }}</h2>
+      <p>{{ resumen(m) }}</p>
+    </div>
+    <button mat-icon-button type="button" mat-dialog-close aria-label="Cerrar"><mat-icon>close</mat-icon></button>
+  </div>
+
+  <mat-dialog-content>
+    <span class="etiqueta categoria"><mat-icon>sell</mat-icon> {{ m.nombreCategoria || 'Sin categoría' }}</span>
+
+    <div class="datos">
+      @for (d of datos(m); track d.etiqueta) {
+        <p><mat-icon>{{ d.icono }}</mat-icon><span><span class="gris">{{ d.etiqueta }}:</span> {{ d.valor }}</span></p>
+      }
+    </div>
+
+    <mat-divider />
+
+    <h3><mat-icon class="verde">bar_chart</mat-icon> Reporte de precios</h3>
+    <div class="resumen">
+      <div><mat-icon>sell</mat-icon><b>{{ r.totalOfertas }}</b><span>Ofertas</span></div>
+      <div><mat-icon>arrow_downward</mat-icon><b>{{ r.precioMinimo | currency: 'PEN' : 'S/ ' }}</b><span>Mínimo</span></div>
+      <div><mat-icon>arrow_upward</mat-icon><b>{{ r.precioMaximo | currency: 'PEN' : 'S/ ' }}</b><span>Máximo</span></div>
+      <div><mat-icon>equal</mat-icon><b>{{ r.precioPromedio | currency: 'PEN' : 'S/ ' }}</b><span>Promedio</span></div>
+    </div>
+
+    @if (r.ofertas.length) {
+      <div class="tabla-scroll">
+        <table class="tabla">
+          <thead>
+            <tr><th>Farmacia</th><th>Distrito</th><th>Precio</th><th>Stock</th></tr>
+          </thead>
+          <tbody>
+            @for (o of r.ofertas; track o.id) {
+              <tr>
+                <td>{{ o.nombreFarmacia }}</td>
+                <td>{{ o.distrito }}</td>
+                <td><b>{{ o.precio | currency: 'PEN' : 'S/ ' }}</b></td>
+                <td><span class="etiqueta" [class]="claseStock(o.stock)">{{ textoStock(o.stock) }}</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="gris">Aún no hay ofertas de este medicamento</p>
+    }
+
+    <h3><mat-icon class="ambar">lightbulb</mat-icon> Alternativas recomendadas</h3>
+    @if (recomendaciones().length) {
+      <table class="tabla">
+        <tbody>
+          @for (x of recomendaciones(); track x.id) {
+            <tr>
+              <td>{{ x.nombreComercial || x.nombre }} <span class="gris">· {{ x.nombre }}</span></td>
+              <td class="derecha">desde <b class="texto-degradado">{{ x.precioMinimo | currency: 'PEN' : 'S/ ' }}</b></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <p class="gris">No hay alternativas con stock.</p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cerrar</button>
+  </mat-dialog-actions>
+}

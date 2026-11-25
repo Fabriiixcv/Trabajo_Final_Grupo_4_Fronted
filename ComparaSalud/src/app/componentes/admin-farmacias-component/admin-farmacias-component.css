@@ -1,0 +1,6 @@
+.titulo-icono {
+  color: var(--cs-azul);
+}
+mat-card-content {
+  padding: 20px;
+}

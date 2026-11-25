@@ -1,0 +1,29 @@
+.bloque {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border: 1px solid #f1f5f9;
+  border-radius: 14px;
+  background: #fff;
+}
+.nombre {
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+.gris {
+  color: #6b7280;
+  font-weight: 400;
+}
+.barata {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+.trofeo {
+  flex-shrink: 0;
+  color: #059669;
+}
+.error {
+  color: #dc2626;
+}

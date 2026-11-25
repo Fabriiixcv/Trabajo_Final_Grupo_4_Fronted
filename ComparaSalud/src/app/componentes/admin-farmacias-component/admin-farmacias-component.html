@@ -1,0 +1,47 @@
+<div class="pagina aparece">
+  <h1><mat-icon class="titulo-icono">store</mat-icon> Farmacias activas</h1>
+  <p class="subtitulo">Farmacias registradas que hoy aparecen en la plataforma.</p>
+
+  @if (datos(); as d) {
+    <mat-card class="cs-card">
+      <mat-card-content>
+        <p class="total">Total: <b>{{ d.total }}</b></p>
+        @if (d.detalle.length) {
+          <div class="tabla-scroll">
+            <table class="tabla gestion">
+              <thead>
+                <tr>
+                  <th>Farmacia</th>
+                  <th>Licencia</th>
+                  <th>Distrito</th>
+                  <th>Teléfono</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (f of d.detalle; track f.id) {
+                  <tr>
+                    <td><b>{{ f.nombre }}</b></td>
+                    <td>{{ f.licencia }}</td>
+                    <td><span class="etiqueta">{{ f.distrito }}</span></td>
+                    <td>{{ f.telefono }}</td>
+                    <td class="acciones">
+                      <button mat-button type="button" class="boton-peligro" (click)="darDeBaja(f)">
+                        <mat-icon>block</mat-icon> Dar de baja
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="vacio">
+            <mat-icon>store</mat-icon>
+            <p>No hay farmacias activas.</p>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

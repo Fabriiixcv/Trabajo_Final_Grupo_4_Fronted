@@ -1,0 +1,190 @@
+<div class="pagina aparece">
+  <!-- Cabecera -->
+  <mat-card class="cs-card hero-pagina rosa fondo-hero">
+    <div class="hero-grid">
+      <div>
+        <p class="kicker"><mat-icon class="relleno">favorite</mat-icon> Guardados</p>
+        <h1>Tus favoritos, a un clic</h1>
+        <p class="subtitulo">Vuelve a los medicamentos y farmacias que guardaste y mira cuál es su mejor precio de hoy.</p>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <mat-icon>medication</mat-icon>
+          <b>{{ medicamentos().length }}</b>
+          <span>medicamentos</span>
+        </div>
+        <div class="stat verde">
+          <mat-icon>store</mat-icon>
+          <b>{{ farmacias().length }}</b>
+          <span>farmacias</span>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Pestañas + búsqueda dentro de los favoritos -->
+  <div class="barra-pestanas">
+    <div class="pestanas" role="tablist" aria-label="Tipo de favorito">
+      <button
+        type="button"
+        role="tab"
+        class="pestana"
+        [attr.aria-selected]="pestana() === 'medicamentos'"
+        (click)="cambiarPestana('medicamentos')"
+      >
+        <mat-icon>medication</mat-icon> Medicamentos <span class="n">{{ medicamentos().length }}</span>
+      </button>
+      <button
+        type="button"
+        role="tab"
+        class="pestana"
+        [attr.aria-selected]="pestana() === 'farmacias'"
+        (click)="cambiarPestana('farmacias')"
+      >
+        <mat-icon>store</mat-icon> Farmacias <span class="n">{{ farmacias().length }}</span>
+      </button>
+    </div>
+
+    @if (pestana() === 'medicamentos' ? medicamentos().length : farmacias().length) {
+      <mat-form-field appearance="outline" class="buscar" subscriptSizing="dynamic">
+        <mat-label>{{ pestana() === 'medicamentos' ? 'Buscar en mis medicamentos' : 'Buscar en mis farmacias' }}</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput autocomplete="off" [value]="texto()" (input)="texto.set($any($event.target).value)" />
+        @if (texto()) {
+          <button matSuffix mat-icon-button type="button" aria-label="Borrar búsqueda" (click)="texto.set('')">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+    }
+  </div>
+
+  @if (pestana() === 'medicamentos') {
+    @if (medicamentos().length) {
+      @if (medicamentosVisibles().length) {
+        <div class="rejilla" role="tabpanel">
+          @for (m of medicamentosVisibles(); track m.id) {
+            @let mejor = mejorOferta().get(m.id);
+            <mat-card class="cs-card con-hover tarjeta">
+              <mat-card-content>
+                <div class="cabecera">
+                  <span class="icono"><mat-icon>medication</mat-icon></span>
+                  <div class="titulos">
+                    <h3>{{ m.nombreComercial || m.nombre }}</h3>
+                    <p>{{ m.nombre }}</p>
+                  </div>
+                  <button
+                    mat-icon-button
+                    type="button"
+                    matTooltip="Quitar de favoritos"
+                    aria-label="Quitar de favoritos"
+                    (click)="quitarMedicamento(m)"
+                  >
+                    <mat-icon class="relleno favorito-activo">favorite</mat-icon>
+                  </button>
+                </div>
+
+                @if (mejor) {
+                  <div class="mejor">
+                    <div>
+                      <p class="mejor-titulo"><mat-icon>emoji_events</mat-icon> Mejor precio hoy</p>
+                      <p class="mejor-farmacia">{{ mejor.nombreFarmacia }} · {{ mejor.distrito }}</p>
+                      <span class="etiqueta" [class]="claseStock(mejor.stock)">{{ textoStock(mejor.stock) }}</span>
+                    </div>
+                    <b class="mejor-precio texto-degradado">{{ mejor.precio | currency: 'PEN' : 'S/ ' }}</b>
+                  </div>
+                } @else if (m.precioDesde !== null) {
+                  <div class="mejor">
+                    <div>
+                      <p class="mejor-titulo"><mat-icon>sell</mat-icon> Precio desde</p>
+                    </div>
+                    <b class="mejor-precio texto-degradado">{{ m.precioDesde | currency: 'PEN' : 'S/ ' }}</b>
+                  </div>
+                } @else {
+                  <div class="sin-ofertas"><mat-icon>sentiment_dissatisfied</mat-icon> Sin ofertas con stock por ahora</div>
+                }
+              </mat-card-content>
+
+              <mat-card-actions class="acciones">
+                <a mat-flat-button class="degradado ancho" routerLink="/cliente/buscar" [queryParams]="{ q: m.nombre }">
+                  <mat-icon>balance</mat-icon> Comparar precios
+                </a>
+              </mat-card-actions>
+            </mat-card>
+          }
+        </div>
+      } @else {
+        <div class="vacio">
+          <mat-icon>search_off</mat-icon>
+          <p>Ningún medicamento guardado coincide con “{{ texto() }}”.</p>
+          <button mat-flat-button type="button" class="degradado" (click)="texto.set('')">Ver todos</button>
+        </div>
+      }
+    } @else if (!cargando()) {
+      <div class="vacio">
+        <mat-icon>favorite</mat-icon>
+        <p>Aún no tienes medicamentos favoritos. Toca el corazón en cualquier resultado para guardarlo.</p>
+        <a mat-flat-button class="degradado" routerLink="/cliente/buscar"><mat-icon>search</mat-icon> Buscar medicamentos</a>
+      </div>
+    }
+  } @else {
+    @if (farmacias().length) {
+      @if (farmaciasVisibles().length) {
+        <div class="rejilla" role="tabpanel">
+          @for (f of farmaciasVisibles(); track f.id) {
+            @let d = datosFarmacias().get(f.id);
+            <mat-card class="cs-card con-hover tarjeta">
+              <mat-card-content>
+                <div class="cabecera">
+                  <span class="icono verde"><mat-icon>store</mat-icon></span>
+                  <div class="titulos">
+                    <h3>{{ f.nombre }}</h3>
+                    <span class="etiqueta">{{ f.distrito }}</span>
+                  </div>
+                  <button
+                    mat-icon-button
+                    type="button"
+                    matTooltip="Quitar de favoritos"
+                    aria-label="Quitar de favoritos"
+                    (click)="quitarFarmacia(f)"
+                  >
+                    <mat-icon class="relleno favorito-activo">favorite</mat-icon>
+                  </button>
+                </div>
+
+                <div class="datos">
+                  <p><mat-icon>location_on</mat-icon> {{ f.direccion }}</p>
+                  @if (d) {
+                    <p><mat-icon>schedule</mat-icon> {{ d.horario }}</p>
+                    <p><mat-icon>call</mat-icon> {{ d.telefono }}</p>
+                  }
+                </div>
+              </mat-card-content>
+
+              <mat-card-actions class="acciones dos">
+                <button mat-stroked-button type="button" class="ver" (click)="verFarmacia(f.id)">
+                  <mat-icon>star</mat-icon> Calificaciones
+                </button>
+                <a mat-flat-button class="degradado" [href]="urlMapa(f)" target="_blank" rel="noopener">
+                  <mat-icon>directions</mat-icon> Cómo llegar
+                </a>
+              </mat-card-actions>
+            </mat-card>
+          }
+        </div>
+      } @else {
+        <div class="vacio">
+          <mat-icon>search_off</mat-icon>
+          <p>Ninguna farmacia guardada coincide con “{{ texto() }}”.</p>
+          <button mat-flat-button type="button" class="degradado" (click)="texto.set('')">Ver todas</button>
+        </div>
+      }
+    } @else if (!cargando()) {
+      <div class="vacio">
+        <mat-icon>favorite</mat-icon>
+        <p>Aún no tienes farmacias favoritas. Guarda las que te queden más cerca.</p>
+        <a mat-flat-button class="degradado" routerLink="/cliente/farmacias"><mat-icon>store</mat-icon> Ver farmacias</a>
+      </div>
+    }
+  }
+</div>

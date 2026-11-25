@@ -1,0 +1,184 @@
+<div class="pagina aparece">
+  <!-- Cabecera: buscador en vivo + cifras -->
+  <mat-card class="cs-card hero-pagina verde fondo-hero">
+    <div class="hero-grid">
+      <div>
+        <p class="kicker"><mat-icon>local_offer</mat-icon> Ofertas</p>
+        <h1>Los mejores precios, en un solo lugar</h1>
+        <p class="subtitulo">Lo que las farmacias tienen en stock hoy. Marcamos la oferta más barata de cada medicamento.</p>
+
+        <mat-form-field appearance="outline" class="campo-hero" subscriptSizing="dynamic">
+          <mat-label>Medicamento o farmacia</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput autocomplete="off" [value]="texto()" (input)="setTexto($any($event.target).value)" />
+          @if (texto()) {
+            <button matSuffix mat-icon-button type="button" aria-label="Borrar búsqueda" (click)="setTexto('')">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <mat-icon>local_offer</mat-icon>
+          <b>{{ todas().length }}</b>
+          <span>ofertas con stock</span>
+        </div>
+        <div class="stat verde">
+          <mat-icon>sell</mat-icon>
+          <b>{{ precioMinimo() !== null ? (precioMinimo() | currency: 'PEN' : 'S/ ') : '—' }}</b>
+          <span>precio más bajo</span>
+        </div>
+        <div class="stat morado">
+          <mat-icon>store</mat-icon>
+          <b>{{ nFarmacias() }}</b>
+          <span>farmacias</span>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+
+  @if (cargando()) {
+    <mat-progress-bar mode="indeterminate" class="progreso" />
+  }
+
+  @if (todas().length) {
+    <!-- Filtros -->
+    <mat-card class="cs-card panel-filtros">
+      <div class="filtros">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Farmacia</mat-label>
+          <mat-icon matPrefix>store</mat-icon>
+          <mat-select [value]="farmaciaId()" (selectionChange)="setFarmacia($event.value)">
+            <mat-option value="">Todas las farmacias</mat-option>
+            @for (f of farmacias(); track f.id) {
+              <mat-option [value]="f.id">{{ f.nombre }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Distrito</mat-label>
+          <mat-icon matPrefix>location_on</mat-icon>
+          <mat-select [value]="distrito()" (selectionChange)="setDistrito($event.value)">
+            <mat-option value="">Todos los distritos</mat-option>
+            @for (d of distritos(); track d) {
+              <mat-option [value]="d">{{ d }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Ordenar por</mat-label>
+          <mat-icon matPrefix>swap_vert</mat-icon>
+          <mat-select [value]="orden()" (selectionChange)="setOrden($event.value)">
+            <mat-option value="recientes">Más recientes</mat-option>
+            <mat-option value="precio-asc">Precio: menor a mayor</mat-option>
+            <mat-option value="precio-desc">Precio: mayor a menor</mat-option>
+            <mat-option value="nombre">Nombre (A–Z)</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-card>
+
+    <div class="herramientas">
+      <div class="chips-filtro sin-margen" role="group" aria-label="Filtrar por disponibilidad">
+        <button type="button" class="chip-filtro" [attr.aria-pressed]="stock() === 'todos'" (click)="setStock('todos')">
+          Todas <span class="n">{{ todas().length }}</span>
+        </button>
+        <button type="button" class="chip-filtro" [attr.aria-pressed]="stock() === 'ok'" (click)="setStock('ok')">
+          <mat-icon>check_circle</mat-icon> Buen stock <span class="n">{{ nBuenStock() }}</span>
+        </button>
+        <button type="button" class="chip-filtro" [attr.aria-pressed]="stock() === 'poco'" (click)="setStock('poco')">
+          <mat-icon>hourglass_bottom</mat-icon> Quedan pocas <span class="n">{{ nPocoStock() }}</span>
+        </button>
+      </div>
+      <div class="controles">
+        <p class="resumen">
+          <b>{{ filtradas().length }}</b> {{ filtradas().length === 1 ? 'oferta' : 'ofertas' }}
+        </p>
+        @if (hayFiltros()) {
+          <button mat-button type="button" class="limpiar-filtros" (click)="limpiarFiltros()">
+            <mat-icon>filter_alt_off</mat-icon> Limpiar filtros
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  @if (!cargando()) {
+    @if (visibles().length) {
+      <div class="rejilla">
+        @for (o of visibles(); track o.id) {
+          <mat-card class="cs-card con-hover tarjeta" [class.destacada]="esMejor(o)">
+            @if (esMejor(o)) {
+              <span class="cinta"><mat-icon>emoji_events</mat-icon> Mejor precio</span>
+            } @else if (esNueva(o)) {
+              <span class="cinta nueva"><mat-icon>bolt</mat-icon> Nueva</span>
+            }
+            <mat-card-content>
+              <div class="cabecera">
+                <span class="icono verde"><mat-icon>medication_liquid</mat-icon></span>
+                <div class="titulos">
+                  <h3>{{ o.nombreMedicamento }}</h3>
+                  <p class="farmacia"><mat-icon>store</mat-icon> {{ o.nombreFarmacia }} · {{ o.distrito }}</p>
+                </div>
+              </div>
+
+              <div class="pie-oferta">
+                <div>
+                  <b class="precio-grande texto-degradado">{{ o.precio | currency: 'PEN' : 'S/ ' }}</b>
+                  @if (extra(o)) {
+                    <p class="extra">{{ extra(o) | currency: 'PEN' : 'S/ ' }} más que la más barata</p>
+                  }
+                </div>
+                <span class="etiqueta" [class]="claseStock(o.stock)">{{ textoStock(o.stock) }}</span>
+              </div>
+
+              <p class="fecha"><mat-icon>schedule</mat-icon> {{ hace(o) }}</p>
+            </mat-card-content>
+
+            <mat-card-actions class="acciones">
+              <button
+                mat-icon-button
+                type="button"
+                [matTooltip]="favoritos().has(o.idMedicamento) ? 'Quitar de favoritos' : 'Guardar en favoritos'"
+                [attr.aria-label]="favoritos().has(o.idMedicamento) ? 'Quitar de favoritos' : 'Guardar en favoritos'"
+                (click)="toggleFavorito(o.idMedicamento)"
+              >
+                <mat-icon [class.relleno]="favoritos().has(o.idMedicamento)" [class.favorito-activo]="favoritos().has(o.idMedicamento)">favorite</mat-icon>
+              </button>
+              <a mat-stroked-button class="comparar" routerLink="/cliente/buscar" [queryParams]="{ q: o.nombreMedicamento }">
+                <mat-icon>balance</mat-icon> Comparar precios
+              </a>
+              <button mat-icon-button type="button" matTooltip="Ver farmacia" aria-label="Ver farmacia" (click)="verFarmacia(o.idFarmacia)">
+                <mat-icon>storefront</mat-icon>
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        }
+      </div>
+
+      @if (visibles().length < filtradas().length) {
+        <div class="ver-mas">
+          <button mat-stroked-button type="button" (click)="verMas()">
+            <mat-icon>expand_more</mat-icon> Ver más ofertas ({{ filtradas().length - visibles().length }})
+          </button>
+        </div>
+      }
+    } @else {
+      <div class="vacio">
+        <mat-icon>filter_alt_off</mat-icon>
+        @if (hayFiltros()) {
+          <p>No hay ofertas con esos filtros. Prueba quitando alguno.</p>
+          <button mat-flat-button type="button" class="degradado" (click)="limpiarFiltros()">
+            <mat-icon>filter_alt_off</mat-icon> Limpiar filtros
+          </button>
+        } @else {
+          <p>Todavía no hay ofertas con stock. Vuelve más tarde.</p>
+        }
+      </div>
+    }
+  }
+</div>

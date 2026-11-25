@@ -1,0 +1,49 @@
+<div class="pagina aparece">
+  <div class="titulo-fila">
+    <h1><mat-icon class="titulo-icono">category</mat-icon> Categorías</h1>
+    <button mat-flat-button type="button" class="degradado" (click)="nueva()">
+      <mat-icon>add</mat-icon> Nueva categoría
+    </button>
+  </div>
+  <p class="subtitulo">Clasifica los medicamentos del catálogo.</p>
+
+  @if (datos(); as d) {
+    <mat-card class="cs-card">
+      <mat-card-content>
+        <p class="total">Total: <b>{{ d.total }}</b></p>
+        @if (d.detalle.length) {
+          <div class="tabla-scroll">
+            <table class="tabla gestion">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of d.detalle; track c.id) {
+                  <tr>
+                    <td><b>{{ c.nombre }}</b></td>
+                    <td>{{ c.descripcion }}</td>
+                    <td class="acciones">
+                      <button mat-button type="button" class="editar" (click)="editar(c)"><mat-icon>edit</mat-icon> Editar</button>
+                      <button mat-button type="button" class="boton-peligro" (click)="eliminar(c)">
+                        <mat-icon>delete</mat-icon> Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="vacio">
+            <mat-icon>category</mat-icon>
+            <p>No hay categorías.</p>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

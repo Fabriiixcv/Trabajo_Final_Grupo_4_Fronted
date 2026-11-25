@@ -1,0 +1,45 @@
+<div class="pagina aparece">
+  <h1><mat-icon class="titulo-icono">medication</mat-icon> Catálogo de medicamentos</h1>
+  <p class="subtitulo">Todos los medicamentos registrados en la plataforma.</p>
+
+  @if (datos(); as d) {
+    <mat-card class="cs-card">
+      <mat-card-content>
+        <p class="total">Total: <b>{{ d.total }}</b></p>
+        @if (d.detalle.length) {
+          <div class="tabla-scroll">
+            <table class="tabla gestion">
+              <thead>
+                <tr>
+                  <th>Medicamento</th>
+                  <th>Concentración</th>
+                  <th>Categoría</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (m of d.detalle; track m.id) {
+                  <tr>
+                    <td><b>{{ m.nombreComercial || m.nombre }}</b><span class="gris"> · {{ m.nombre }}</span></td>
+                    <td>{{ m.concentracion }}</td>
+                    <td>{{ m.nombreCategoria || '—' }}</td>
+                    <td class="acciones">
+                      <button mat-button type="button" class="boton-peligro" (click)="eliminar(m)">
+                        <mat-icon>delete</mat-icon> Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="vacio">
+            <mat-icon>medication</mat-icon>
+            <p>El catálogo está vacío.</p>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

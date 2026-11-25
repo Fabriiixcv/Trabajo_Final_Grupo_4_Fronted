@@ -1,0 +1,60 @@
+<mat-toolbar class="barra">
+  <div class="interior">
+    <a class="marca" [routerLink]="inicio()" aria-label="ComparaSalud, ir al inicio">
+      <img class="logo" src="/images/logo.png" alt="" />
+      <span class="nombre">ComparaSalud</span>
+      @if (etiquetaRol()) {
+        <span class="pastilla">{{ etiquetaRol() }}</span>
+      }
+    </a>
+
+    @if (auth.sesion(); as s) {
+      <!-- Con sesión: pestañas del rol (pantallas anchas) -->
+      <nav class="enlaces" aria-label="Secciones">
+        @for (e of enlaces(); track e.ruta) {
+          <a mat-button [routerLink]="e.ruta" routerLinkActive="activo">
+            <mat-icon>{{ e.icono }}</mat-icon>
+            {{ e.texto }}
+          </a>
+        }
+      </nav>
+
+      <span class="espacio"></span>
+
+      <div class="usuario">
+        <span class="avatar">{{ inicial() }}</span>
+        <span class="usuario-nombre">{{ s.nombre }}</span>
+      </div>
+      <button mat-button type="button" class="salir" (click)="cerrarSesion()">
+        <mat-icon>logout</mat-icon>
+        Salir
+      </button>
+
+      <!-- Pantallas pequeñas: todo en un menú desplegable -->
+      <button mat-icon-button type="button" class="hamburguesa" [matMenuTriggerFor]="menu" aria-label="Abrir menú">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu" xPosition="before">
+        @for (e of enlaces(); track e.ruta) {
+          <a mat-menu-item [routerLink]="e.ruta" routerLinkActive="activo">
+            <mat-icon>{{ e.icono }}</mat-icon>
+            <span>{{ e.texto }}</span>
+          </a>
+        }
+        <mat-divider />
+        <button mat-menu-item type="button" (click)="cerrarSesion()">
+          <mat-icon>logout</mat-icon>
+          <span>Cerrar sesión</span>
+        </button>
+      </mat-menu>
+    } @else {
+      <!-- Sin sesión: Home, Iniciar sesión y Registrarse -->
+      <span class="espacio"></span>
+      <a mat-button class="publico" routerLink="/" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }">
+        Home
+      </a>
+      <a mat-button class="publico" routerLink="/login" routerLinkActive="activo">Iniciar sesión</a>
+      <a mat-flat-button class="degradado" routerLink="/registro">Registrarse</a>
+    }
+  </div>
+</mat-toolbar>

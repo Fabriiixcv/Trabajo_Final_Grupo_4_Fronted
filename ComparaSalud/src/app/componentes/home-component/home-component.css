@@ -1,0 +1,684 @@
+.portada {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid #f1f5f9;
+}
+.portada-interior {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 56px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 88px 16px 96px;
+}
+h1 {
+  max-width: 600px;
+  margin: 0 0 20px;
+  font-size: clamp(2.3rem, 5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #111827;
+}
+.bajada {
+  max-width: 480px;
+  margin: 0 0 28px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #4b5563;
+}
+.botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.grande {
+  height: 52px;
+  padding: 0 28px;
+  font-size: 16px;
+}
+
+/* Cifras bajo los botones */
+.estadisticas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 44px;
+}
+.estadisticas div {
+  display: flex;
+  flex-direction: column;
+}
+.estadisticas b {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.estadisticas span {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Tarjeta de ejemplo (misma que en la búsqueda) con cuadros de color detrás */
+.visual {
+  position: relative;
+  justify-self: center;
+  width: 100%;
+  max-width: 440px;
+}
+.cuadro-a {
+  top: -18px;
+  right: -18px;
+  z-index: 1;
+  width: 84px;
+  height: 84px;
+  opacity: 0.9;
+  transform: rotate(12deg);
+}
+.cuadro-b {
+  bottom: -18px;
+  left: -18px;
+  z-index: 0;
+  width: 64px;
+  height: 64px;
+  opacity: 0.9;
+  transform: rotate(-12deg);
+}
+.chip-flota {
+  position: absolute;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 14px 28px -8px rgba(15, 23, 42, 0.3);
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+  animation: flotar 7s ease-in-out infinite;
+}
+.chip-flota mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  color: #059669;
+}
+.chip-a {
+  top: 28%;
+  left: -52px;
+}
+.chip-b {
+  right: -40px;
+  bottom: 18%;
+  animation-delay: -3s;
+}
+.punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25);
+  animation: latido 2s infinite;
+}
+.ejemplo {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  --mat-card-elevated-container-shape: 24px;
+  border-radius: 24px !important;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.28) !important;
+}
+.ejemplo mat-card-content {
+  padding: 20px;
+}
+.rotulo-ejemplo {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+.mejor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #d1fae5;
+  border-radius: 12px;
+  background: #ecfdf5;
+}
+.mejor p {
+  margin: 0;
+}
+.mejor-titulo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #047857;
+}
+.mejor-titulo mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+.mejor-farmacia {
+  font-size: 14px;
+  color: #374151;
+}
+.mejor-precio {
+  font-size: 28px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.otras {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+.otras li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid #f3f4f6;
+}
+.derecha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.gris {
+  color: #9ca3af;
+}
+
+/* Secciones */
+.seccion {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 56px 16px 0;
+}
+.seccion {
+  padding-top: 88px;
+  padding-bottom: 88px;
+}
+.seccion:last-child {
+  padding-bottom: 0;
+}
+.seccion.fondo-gris {
+  max-width: none;
+  background: #f9fafb;
+  border-block: 1px solid #f1f5f9;
+}
+.interior {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.angosto {
+  max-width: 760px;
+}
+.seccion h2 {
+  margin: 0 0 12px;
+  text-align: center;
+  font-size: clamp(1.7rem, 3.2vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #111827;
+}
+.seccion-bajada {
+  max-width: 560px;
+  margin: 0 auto 44px;
+  text-align: center;
+  font-size: 18px;
+  color: #6b7280;
+}
+.pasos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.paso mat-card-content {
+  padding: 32px;
+}
+.paso .icono {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+}
+.paso .icono mat-icon {
+  width: 30px;
+  height: 30px;
+  font-size: 30px;
+}
+/* los tres iconos llevan los colores de la landing: degradado, morado y verde */
+.paso:nth-child(2) .icono {
+  background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+  box-shadow: 0 6px 14px -4px rgba(168, 85, 247, 0.5);
+}
+.paso:nth-child(3) .icono {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 6px 14px -4px rgba(16, 185, 129, 0.5);
+}
+.paso h3 {
+  margin: 24px 0 8px;
+  font-size: 22px;
+  font-weight: 700;
+}
+.paso p {
+  margin: 0;
+  line-height: 1.55;
+  color: #6b7280;
+}
+
+.banda {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 48px 48px;
+  border-radius: 28px;
+  background: var(--cs-degradado);
+  color: #fff;
+  box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.4);
+}
+/* círculos translúcidos, como el panel de cristal de la sección de registro */
+.banda::before,
+.banda::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+.banda::before {
+  top: -70px;
+  right: 120px;
+  width: 200px;
+  height: 200px;
+}
+.banda::after {
+  bottom: -90px;
+  right: -40px;
+  width: 260px;
+  height: 260px;
+}
+.banda > * {
+  position: relative;
+  z-index: 1;
+}
+.banda h2 {
+  margin: 0 0 8px;
+  text-align: left;
+  font-size: 30px;
+  color: #fff;
+}
+.banda p {
+  margin: 0;
+  max-width: 460px;
+  font-size: 18px;
+  opacity: 0.92;
+}
+.boton-blanco {
+  --mat-button-filled-container-color: #fff;
+  --mat-button-filled-label-text-color: #1d4ed8;
+  background-color: #fff !important;
+  color: #1d4ed8 !important;
+  flex-shrink: 0;
+  font-weight: 600;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+.boton-blanco:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 24px -8px rgba(0, 0, 0, 0.3);
+}
+
+.izq {
+  text-align: left !important;
+  margin-bottom: 16px !important;
+}
+.lead {
+  max-width: 520px;
+  margin: 0 0 32px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #6b7280;
+}
+.dos-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+.invertida .panel-blanco {
+  order: -1;
+}
+
+/* Beneficios */
+.beneficios {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.beneficio mat-card-content {
+  padding: 32px;
+}
+.beneficio .icono {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+}
+.beneficio:nth-child(2) .icono {
+  background: linear-gradient(135deg, #a855f7, #7e22ce);
+}
+.beneficio:nth-child(3) .icono {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+.beneficio h3 {
+  margin: 24px 0 8px;
+  font-size: 22px;
+  font-weight: 700;
+}
+.beneficio p {
+  margin: 0 0 16px;
+  line-height: 1.55;
+  color: #6b7280;
+}
+.checks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #4b5563;
+}
+.checks li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.checks mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #10b981;
+}
+
+/* Listas de ventajas */
+.ventajas {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+.ventaja {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.ventaja .icono {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+}
+.ventaja h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.ventaja p {
+  margin: 0;
+  line-height: 1.55;
+  color: #6b7280;
+}
+
+/* Panel de cifras y testimonio */
+.panel-gris,
+.panel-blanco {
+  padding: 32px;
+  border-radius: 28px;
+  box-shadow: var(--cs-sombra);
+}
+.panel-gris {
+  background: #f9fafb;
+  border: 1px solid #f1f5f9;
+}
+.panel-blanco {
+  display: grid;
+  gap: 16px;
+  background: #fff;
+}
+.cifras {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.cifra {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 12px;
+  border-radius: 18px;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.cifra b {
+  font-size: 30px;
+  font-weight: 800;
+}
+.cifra span {
+  font-size: 13px;
+  color: #6b7280;
+}
+.testimonio {
+  margin: 20px 0 0;
+  padding: 24px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.persona {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.persona img {
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+.persona div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.persona span {
+  font-size: 13px;
+  color: #6b7280;
+}
+.persona .estrellas {
+  flex: none;
+  font-size: 15px;
+  letter-spacing: 2px;
+  color: #fbbf24;
+}
+blockquote {
+  margin: 16px 0 0;
+  font-style: italic;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+/* Métricas de farmacia */
+.metrica {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: #eff6ff;
+}
+.metrica.verde {
+  background: #ecfdf5;
+}
+.metrica.morado {
+  background: #faf5ff;
+}
+.metrica div span {
+  display: block;
+  font-size: 14px;
+  color: #6b7280;
+}
+.metrica b {
+  font-size: 30px;
+  font-weight: 800;
+}
+.icono-m {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--cs-degradado);
+  color: #fff;
+  box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.4);
+}
+.metrica.verde .icono-m {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+.metrica.morado .icono-m {
+  background: linear-gradient(135deg, #a855f7, #7e22ce);
+}
+
+/* Farmacias que confían */
+.logos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+.logo-farmacia {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border: 1px solid #f1f5f9;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--cs-sombra);
+  font-weight: 600;
+  color: #374151;
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s;
+}
+.logo-farmacia:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--cs-sombra-hover);
+}
+.logo-farmacia img {
+  border-radius: 50%;
+}
+.logo-farmacia.total {
+  border: 0;
+  background: var(--cs-degradado);
+  color: #fff;
+}
+
+/* Preguntas frecuentes (details nativo, sin JS) */
+.pregunta {
+  margin-bottom: 12px;
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--cs-sombra);
+  transition: border-color 0.2s;
+}
+.pregunta[open] {
+  border-color: #bfdbfe;
+}
+.pregunta summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+.pregunta summary::-webkit-details-marker {
+  display: none;
+}
+.pregunta summary mat-icon {
+  flex-shrink: 0;
+  color: var(--cs-azul);
+  transition: transform 0.25s;
+}
+.pregunta[open] summary mat-icon {
+  transform: rotate(180deg);
+}
+.pregunta p {
+  margin: 0;
+  padding: 0 20px 18px;
+  line-height: 1.6;
+  color: #6b7280;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boton-blanco:hover,
+  .logo-farmacia:hover {
+    transform: none;
+  }
+  .chip-flota,
+  .punto {
+    animation: none;
+  }
+}
+@media (max-width: 900px) {
+  .portada-interior {
+    grid-template-columns: 1fr;
+    padding: 48px 16px 56px;
+  }
+  .estadisticas {
+    gap: 28px;
+    margin-top: 32px;
+  }
+  .banda {
+    padding: 36px 28px;
+  }
+  .pasos,
+  .beneficios,
+  .dos-col {
+    grid-template-columns: 1fr;
+  }
+  .dos-col {
+    gap: 40px;
+  }
+  .invertida .panel-blanco {
+    order: 0;
+  }
+  .chip-flota {
+    display: none;
+  }
+  .seccion {
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+  .banda {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

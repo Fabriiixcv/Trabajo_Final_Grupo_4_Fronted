@@ -1,0 +1,728 @@
+/*primay:azul, accent:rosa, warn: rojo*/
+/* You can add global styles to this file, and also import other style files */
+
+/* ---------- Identidad ComparaSalud (azul -> verde, igual que el HTML) ---------- */
+:root {
+  --cs-azul: #2563eb;
+  --cs-azul-oscuro: #1e40af;
+  --cs-verde: #10b981;
+  --cs-verde-oscuro: #059669;
+  --cs-degradado: linear-gradient(135deg, #2563eb 0%, #10b981 100%);
+  --cs-degradado-hover: linear-gradient(135deg, #1e40af 0%, #059669 100%);
+  --cs-fondo: #f9fafb;
+  --cs-borde: #f1f5f9;
+  --cs-sombra: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+  --cs-sombra-hover: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+  --cs-sombra-boton: 0 10px 15px -3px rgba(37, 99, 235, 0.3), 0 4px 6px -4px rgba(16, 185, 129, 0.3);
+  --cs-morado: #a855f7;
+  --cs-morado-oscuro: #7e22ce;
+  /* Formas de Angular Material */
+  --mat-form-field-outlined-container-shape: 12px;
+  --mat-dialog-container-shape: 20px;
+  --mat-snack-bar-container-shape: 12px;
+}
+body {
+  background-color: var(--cs-fondo);
+}
+.pagina {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 96px;
+}
+.pagina h1 {
+  margin: 0 0 4px;
+  font-size: 26px;
+  font-weight: 700;
+}
+.pagina .subtitulo {
+  margin: 0 0 20px;
+  color: #6b7280;
+}
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.vacio {
+  grid-column: 1 / -1;
+  padding: 40px 16px;
+  text-align: center;
+  color: #6b7280;
+}
+.vacio mat-icon {
+  width: 48px;
+  height: 48px;
+  font-size: 48px;
+  color: #9ca3af;
+}
+/* cabecera de una tarjeta: icono + títulos + acción */
+.cabecera {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.cabecera .titulos {
+  flex: 1;
+  min-width: 0;
+}
+.cabecera h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+.cabecera p {
+  margin: 2px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+.icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--cs-degradado);
+  color: #fff;
+  box-shadow: 0 6px 14px -4px rgba(37, 99, 235, 0.45);
+}
+.icono.verde {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  box-shadow: 0 6px 14px -4px rgba(16, 185, 129, 0.5);
+}
+.icono.morado {
+  background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+  color: #fff;
+  box-shadow: 0 6px 14px -4px rgba(168, 85, 247, 0.5);
+}
+/* etiquetas pequeñas (distrito, stock) */
+.etiqueta {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.etiqueta.ok {
+  background: #ecfdf5;
+  color: #047857;
+}
+.etiqueta.poco {
+  background: #fffbeb;
+  color: #b45309;
+}
+.etiqueta.agotado {
+  background: #fef2f2;
+  color: #dc2626;
+}
+.precio {
+  font-weight: 700;
+  color: var(--cs-azul);
+}
+/* corazón / estrellas de Material Symbols rellenos */
+.relleno {
+  font-variation-settings: 'FILL' 1;
+}
+.favorito-activo {
+  color: #ef4444;
+}
+.estrella {
+  color: #fbbf24;
+}
+/* tablas simples dentro de los diálogos */
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.tabla th,
+.tabla td {
+  padding: 8px 6px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+.tabla th {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* ---------- Pantallas del administrador (tablas de gestión) ---------- */
+.pagina .total {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #6b7280;
+}
+.pagina .total b {
+  color: #111827;
+}
+.tabla-scroll {
+  overflow-x: auto;
+}
+.tabla .acciones {
+  text-align: right;
+  white-space: nowrap;
+}
+.tabla .gris {
+  color: #9ca3af;
+}
+.boton-peligro {
+  --mat-button-text-label-text-color: #dc2626;
+  color: #dc2626;
+}
+
+/* =====================================================================
+   Piezas reutilizables (cliente, farmacia y administrador)
+   ===================================================================== */
+
+/* Tarjeta blanca con borde suave: se aplica con class="cs-card" en <mat-card> */
+mat-card.cs-card {
+  --mat-card-elevated-container-color: #fff;
+  --mat-card-elevated-container-shape: 16px;
+  border: 1px solid var(--cs-borde);
+  border-radius: 16px;
+  box-shadow: var(--cs-sombra);
+}
+/* Elevación al pasar el mouse (como .card-hover del HTML) */
+mat-card.cs-card.con-hover {
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s,
+    border-color 0.3s;
+}
+mat-card.cs-card.con-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--cs-sombra-hover);
+  border-color: #dbeafe;
+}
+
+/* Botón principal con el degradado de la marca (en <button mat-flat-button class="degradado">) */
+.degradado {
+  --mat-button-filled-container-color: transparent;
+  --mat-button-filled-label-text-color: #fff;
+  --mat-button-filled-disabled-container-color: #cbd5e1;
+  --mat-button-filled-disabled-label-text-color: #fff;
+  /* Los estilos de Material se cargan después y ganan en empates, por eso el
+     color y el fondo van con !important: así el botón nunca queda blanco sobre blanco. */
+  background-color: #2563eb !important;
+  background-image: var(--cs-degradado);
+  color: #fff !important;
+  box-shadow: var(--cs-sombra-boton);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    background-image 0.2s;
+}
+.degradado .mdc-button__label,
+.degradado mat-icon {
+  color: #fff;
+}
+.degradado:hover {
+  background-image: var(--cs-degradado-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.35), 0 8px 10px -6px rgba(16, 185, 129, 0.35);
+}
+/* Desactivado: gris sólido con texto blanco, sin sombra ni movimiento */
+.degradado[disabled],
+.degradado:disabled,
+.degradado.mat-mdc-button-disabled,
+.degradado[aria-disabled='true'] {
+  background-color: #cbd5e1 !important;
+  background-image: none;
+  color: #fff !important;
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+/* Botón de acción destructiva (eliminar) relleno */
+.rojo-lleno {
+  --mat-button-filled-container-color: #dc2626;
+  --mat-button-filled-label-text-color: #fff;
+}
+
+/* Texto con degradado (precios destacados) */
+.texto-degradado {
+  background: var(--cs-degradado);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Fondo suave de las zonas de bienvenida */
+.fondo-hero {
+  background-color: #fff;
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(37, 99, 235, 0.1) 0%, transparent 55%),
+    radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.1) 0%, transparent 55%);
+}
+
+/* Cabecera de los diálogos: icono + títulos + botón de cerrar */
+.dialogo-cab {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 16px 4px 24px;
+}
+.dialogo-cab .titulos {
+  flex: 1;
+  min-width: 0;
+}
+.dialogo-cab .titulos p {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+.dialogo-cab h2.mat-mdc-dialog-title {
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.dialogo-cab h2.mat-mdc-dialog-title::before {
+  display: none;
+}
+.icono.rojo {
+  background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+  color: #fff;
+  box-shadow: 0 6px 14px -4px rgba(220, 38, 38, 0.45);
+}
+
+/* Mensaje de entrada de las pantallas (una sola vez al abrir) */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.aparece {
+  animation: aparecer 0.35s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .aparece {
+    animation: none;
+  }
+  mat-card.cs-card.con-hover,
+  mat-card.cs-card.con-hover:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Título de página con icono */
+.pagina h1 mat-icon {
+  vertical-align: -5px;
+  margin-right: 6px;
+}
+
+/* =====================================================================
+   Farmacia y administrador: piezas compartidas
+   ===================================================================== */
+/* Fila de título de página con botón a la derecha */
+.titulo-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.titulo-fila h1 {
+  margin: 0;
+}
+/* Etiquetas con icono y en gris (stock, "n con stock") */
+.etiqueta.con-icono {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.etiqueta.con-icono mat-icon {
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+}
+.etiqueta.gris {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+/* Tablas de gestión del administrador */
+.tabla.gestion th {
+  padding: 10px 12px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.tabla.gestion td {
+  padding: 12px;
+}
+.tabla.gestion tbody tr {
+  transition: background 0.15s;
+}
+.tabla.gestion tbody tr:hover {
+  background: #f9fafb;
+}
+.tabla.gestion tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* =====================================================================
+   Acabado visual (inspirado en la landing del TP): solo estética
+   ===================================================================== */
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+::selection {
+  background: rgba(37, 99, 235, 0.2);
+}
+:focus-visible {
+  outline: 2px solid var(--cs-azul);
+  outline-offset: 2px;
+}
+/* barra de desplazamiento con los colores de la marca */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #93c5fd transparent;
+}
+/* fondo de diálogos difuminado, como el encabezado de la landing */
+.cdk-overlay-dark-backdrop {
+  backdrop-filter: blur(4px);
+}
+/* título de página: más peso, igual que los titulares de la landing */
+.pagina h1 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #111827;
+}
+.pagina h1 mat-icon {
+  padding: 6px;
+  width: 40px;
+  height: 40px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: #eff6ff;
+  font-size: 28px;
+  vertical-align: -9px;
+}
+/* etiquetas con un punto de color y más presencia */
+.etiqueta {
+  font-weight: 600;
+}
+.precio {
+  background: var(--cs-degradado);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* estado vacío más amable */
+.vacio mat-icon {
+  box-sizing: content-box;
+  padding: 20px;
+  border-radius: 24px;
+  background: var(--cs-degradado);
+  color: #fff;
+  opacity: 0.9;
+  animation: flotar 6s ease-in-out infinite;
+}
+/* Movimiento suave de la landing (se usa en portada y pantalla de acceso) */
+@keyframes flotar {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.flota {
+  animation: flotar 6s ease-in-out infinite;
+}
+@keyframes latido {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+/* cuadros de color que decoran las esquinas de una tarjeta */
+.adorno {
+  position: absolute;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px -6px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+.adorno.grad {
+  background: var(--cs-degradado);
+}
+.adorno.mor {
+  background: var(--cs-morado);
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .flota,
+  .vacio mat-icon {
+    animation: none;
+  }
+  .degradado:hover {
+    transform: none;
+  }
+}
+
+/* =====================================================================
+   Etapa 5: Farmacias, Favoritos y Ofertas del cliente
+   Piezas compartidas (cabecera de página, filtros rápidos, barra de herramientas)
+   ===================================================================== */
+
+/* Cabecera de página con buscador y cifras (misma familia visual que Buscar) */
+mat-card.cs-card.hero-pagina {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 24px;
+  border-color: #dbeafe;
+  border-radius: 28px;
+  box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.18);
+}
+.hero-pagina::after {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -60px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: var(--cs-degradado);
+  opacity: 0.12;
+  pointer-events: none;
+}
+.hero-pagina.rosa::after {
+  background: linear-gradient(135deg, #f472b6 0%, #ef4444 100%);
+  opacity: 0.16;
+}
+.hero-pagina.rosa {
+  border-color: #fce7f3;
+  box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.16);
+}
+.hero-pagina.verde::after {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+.hero-pagina .hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 32px;
+  align-items: center;
+  padding: 36px;
+}
+.hero-pagina h1 {
+  margin: 0 0 8px;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  line-height: 1.1;
+}
+.hero-pagina .subtitulo {
+  margin: 0 0 22px;
+  max-width: 520px;
+  font-size: 17px;
+}
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-weight: 600;
+  color: var(--cs-azul);
+}
+.hero-pagina.rosa .kicker {
+  color: #dc2626;
+}
+.hero-pagina.verde .kicker {
+  color: var(--cs-verde-oscuro);
+}
+.campo-hero {
+  width: 100%;
+  max-width: 520px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px -10px rgba(15, 23, 42, 0.25);
+}
+
+/* Cifras de la cabecera */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+.stat {
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 14px 28px -12px rgba(15, 23, 42, 0.2);
+}
+.stat mat-icon {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 6px;
+  font-size: 22px;
+  color: var(--cs-azul);
+}
+.stat b {
+  display: block;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.stat span {
+  font-size: 13px;
+  color: #6b7280;
+}
+.stat.verde mat-icon {
+  color: var(--cs-verde-oscuro);
+}
+.stat.rosa mat-icon {
+  color: #ef4444;
+}
+.stat.morado mat-icon {
+  color: var(--cs-morado-oscuro);
+}
+
+/* Filtros rápidos en forma de píldora */
+.chips-filtro {
+  display: flex;
+  gap: 8px;
+  margin: 0 -2px 8px;
+  padding: 4px 2px 10px;
+  overflow-x: auto;
+}
+.chip-filtro {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b5563;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+}
+.chip-filtro mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  color: #9ca3af;
+}
+.chip-filtro:hover {
+  border-color: #93c5fd;
+  color: var(--cs-azul);
+}
+.chip-filtro[aria-pressed='true'] {
+  border-color: transparent;
+  background: var(--cs-degradado);
+  color: #fff;
+  box-shadow: var(--cs-sombra-boton);
+}
+.chip-filtro[aria-pressed='true'] mat-icon {
+  color: #fff;
+}
+.chip-filtro .n {
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  font-size: 12px;
+  color: #6b7280;
+}
+.chip-filtro[aria-pressed='true'] .n {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+/* Barra con el conteo de resultados, el orden y "Limpiar filtros" */
+.herramientas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0 20px;
+}
+.herramientas .resumen {
+  margin: 0;
+  font-size: 15px;
+  color: #4b5563;
+}
+.herramientas .resumen b {
+  color: #111827;
+}
+.herramientas .controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.herramientas .orden {
+  width: 230px;
+  background: #fff;
+  border-radius: 12px;
+}
+.limpiar-filtros {
+  --mat-button-text-label-text-color: #2563eb;
+}
+
+/* Fragmento del texto buscado, resaltado */
+.resaltado {
+  border-radius: 4px;
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* Estrellas de calificación (solo lectura) */
+.estrellas-fila {
+  display: inline-flex;
+  align-items: center;
+}
+.estrellas-fila mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+.estrellas-fila mat-icon.apagada {
+  color: #e5e7eb;
+}
+
+@media (max-width: 900px) {
+  .hero-pagina .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 28px 22px;
+  }
+}
+@media (max-width: 600px) {
+  .herramientas .orden {
+    width: 100%;
+  }
+  .herramientas .controles {
+    width: 100%;
+  }
+}

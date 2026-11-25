@@ -1,0 +1,40 @@
+.titulo-icono {
+  color: var(--cs-azul);
+}
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.kpi {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+}
+.icono-kpi {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.45);
+  background: var(--cs-degradado);
+  color: #fff;
+}
+.kpi b {
+  display: block;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.1;
+  background: var(--cs-degradado);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.kpi small {
+  color: #6b7280;
+  font-size: 14px;
+}

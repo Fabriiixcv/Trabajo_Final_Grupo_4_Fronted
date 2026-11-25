@@ -1,0 +1,10 @@
+.titulo-icono {
+  color: var(--cs-azul);
+}
+mat-card-content {
+  padding: 20px;
+}
+.editar {
+  --mat-button-text-label-text-color: #2563eb;
+  --mat-button-text-state-layer-color: #2563eb;
+}

@@ -1,0 +1,43 @@
+<div class="pagina aparece">
+  <h1><mat-icon class="titulo-icono">group</mat-icon> Clientes</h1>
+  <p class="subtitulo">Cuentas de clientes registradas en la plataforma.</p>
+
+  @if (datos(); as d) {
+    <mat-card class="cs-card">
+      <mat-card-content>
+        <p class="total">Total: <b>{{ d.total }}</b></p>
+        @if (d.detalle.length) {
+          <div class="tabla-scroll">
+            <table class="tabla gestion">
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Correo</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (c of d.detalle; track c.id) {
+                  <tr>
+                    <td><b>{{ c.nombre }} {{ c.apellidos }}</b></td>
+                    <td>{{ c.correo }}</td>
+                    <td class="acciones">
+                      <button mat-button type="button" class="boton-peligro" (click)="eliminar(c)">
+                        <mat-icon>delete</mat-icon> Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="vacio">
+            <mat-icon>group</mat-icon>
+            <p>No hay clientes registrados.</p>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

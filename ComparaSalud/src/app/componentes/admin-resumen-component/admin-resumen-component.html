@@ -1,0 +1,18 @@
+<div class="pagina aparece">
+  <h1><mat-icon class="titulo-icono">dashboard</mat-icon> Resumen de la plataforma</h1>
+  <p class="subtitulo">Totales actuales de ComparaSalud.</p>
+
+  <div class="kpis">
+    @for (k of kpis(); track k.clave) {
+      <mat-card class="cs-card con-hover">
+        <mat-card-content class="kpi">
+          <span class="icono-kpi"><mat-icon>{{ k.icono }}</mat-icon></span>
+          <div>
+            <b>{{ k.total ?? '—' }}</b>
+            <small>{{ k.etiqueta }}</small>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>

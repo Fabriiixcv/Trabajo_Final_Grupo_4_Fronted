@@ -1,0 +1,149 @@
+.progreso {
+  margin-bottom: 16px;
+  border-radius: 4px;
+}
+.panel-filtros {
+  margin-bottom: 16px;
+}
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 16px;
+}
+.sin-margen {
+  margin: 0;
+  padding: 0;
+}
+.herramientas {
+  margin-top: 0;
+}
+.herramientas .controles {
+  gap: 14px;
+}
+
+.rejilla {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+}
+.tarjeta.destacada {
+  border-color: #a7f3d0;
+}
+.tarjeta mat-card-content {
+  flex: 1;
+  padding: 22px 20px 8px;
+}
+.cabecera {
+  padding-right: 4px;
+}
+.tarjeta.destacada .titulos,
+.tarjeta:has(.cinta) .titulos {
+  padding-top: 24px;
+}
+.farmacia {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.farmacia mat-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  color: #9ca3af;
+}
+.cinta {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px 3px 6px;
+  border-radius: 999px;
+  background: var(--cs-degradado);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 6px 12px -4px rgba(37, 99, 235, 0.5);
+}
+.cinta.nueva {
+  background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+  box-shadow: 0 6px 12px -4px rgba(168, 85, 247, 0.5);
+}
+.cinta mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+.pie-oferta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 18px 0 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ecfdf5 0%, #eff6ff 100%);
+}
+.precio-grande {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.extra {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #b45309;
+}
+.fecha {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+.fecha mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  color: #d1d5db;
+}
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 14px;
+}
+.comparar {
+  flex: 1;
+  height: 44px;
+  --mat-button-outlined-label-text-color: #2563eb;
+  --mat-button-outlined-outline-color: #dbeafe;
+}
+.ver-mas {
+  display: flex;
+  justify-content: center;
+  margin: 28px 0 8px;
+}
+.ver-mas button {
+  height: 48px;
+  padding: 0 28px;
+  --mat-button-outlined-label-text-color: #2563eb;
+  --mat-button-outlined-outline-color: #bfdbfe;
+}
+@media (max-width: 800px) {
+  .filtros {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 400px) {
+  .rejilla {
+    grid-template-columns: 1fr;
+  }
+}

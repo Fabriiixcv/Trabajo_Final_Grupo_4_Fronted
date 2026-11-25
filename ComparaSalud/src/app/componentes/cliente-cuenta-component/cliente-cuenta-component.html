@@ -1,0 +1,54 @@
+<div class="pagina estrecha aparece">
+  @if (cliente(); as c) {
+    <mat-card class="cs-card tarjeta">
+      <div class="banner">
+        <span class="avatar">{{ inicial(c.nombre) }}</span>
+        <div class="datos">
+          <h2>{{ c.nombre }} {{ c.apellidos }}</h2>
+          <p><mat-icon>mail</mat-icon> {{ c.correo }}</p>
+        </div>
+      </div>
+
+      <mat-card-content>
+        <!-- Formulario de "Mis datos" (Angular Material) -->
+        <form [formGroup]="form" (ngSubmit)="guardar()">
+          <h3>Mis datos</h3>
+          <div class="campos">
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <mat-icon matPrefix>person</mat-icon>
+              <input matInput formControlName="nombre" autocomplete="given-name" />
+              @if (form.controls.nombre.hasError('required')) {
+                <mat-error>Escribe tu nombre</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Apellidos</mat-label>
+              <mat-icon matPrefix>badge</mat-icon>
+              <input matInput formControlName="apellidos" autocomplete="family-name" />
+              @if (form.controls.apellidos.hasError('required')) {
+                <mat-error>Escribe tus apellidos</mat-error>
+              }
+            </mat-form-field>
+          </div>
+          <button mat-flat-button type="submit" class="degradado" [disabled]="guardando()">
+            <mat-icon>save</mat-icon> Guardar cambios
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-expansion-panel class="avanzadas">
+      <mat-expansion-panel-header>
+        <mat-panel-title><mat-icon>settings</mat-icon> Opciones avanzadas</mat-panel-title>
+      </mat-expansion-panel-header>
+      <h3 class="peligro">Eliminar mi cuenta</h3>
+      <p>Se borrarán tu cuenta, tus favoritos y tus calificaciones. Esta acción no se puede deshacer.</p>
+      <button mat-stroked-button type="button" class="boton-peligro" (click)="eliminarCuenta()">
+        <mat-icon>delete</mat-icon> Eliminar cuenta
+      </button>
+    </mat-expansion-panel>
+  } @else {
+    <p class="cargando">Cargando tus datos…</p>
+  }
+</div>

@@ -1,0 +1,259 @@
+<!-- Portada -->
+<section class="portada fondo-hero">
+  <div class="portada-interior">
+    <div class="mensaje aparece">
+      <h1>Tu salud, <span class="texto-degradado">transparente</span> y al alcance</h1>
+      <p class="bajada">
+        Compara precios y disponibilidad de medicamentos entre farmacias y encuentra la mejor opción cerca de ti.
+      </p>
+
+      <div class="botones">
+        @if (panel(); as destino) {
+          <a mat-flat-button class="degradado grande" [routerLink]="destino">
+            <mat-icon>arrow_forward</mat-icon>
+            Ir a mi panel
+          </a>
+        } @else {
+          <a mat-flat-button class="degradado grande" routerLink="/registro">
+            <mat-icon>person_add</mat-icon>
+            Crear cuenta
+          </a>
+          <a mat-stroked-button class="grande" routerLink="/login">Iniciar sesión</a>
+        }
+      </div>
+
+      <div class="estadisticas">
+        <div>
+          <b class="texto-degradado">100+</b>
+          <span>Farmacias</span>
+        </div>
+        <div>
+          <b class="texto-degradado">2.5K+</b>
+          <span>Medicamentos</span>
+        </div>
+        <div>
+          <b class="texto-degradado">4.8★</b>
+          <span>Calificación</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ejemplo de resultado: así se ve una búsqueda -->
+    <div class="visual">
+      <span class="adorno grad cuadro-a" aria-hidden="true"></span>
+      <span class="adorno mor cuadro-b" aria-hidden="true"></span>
+      <span class="chip-flota chip-a" aria-hidden="true"><mat-icon>savings</mat-icon> Ahorra hasta 70%</span>
+      <span class="chip-flota chip-b" aria-hidden="true"><i class="punto"></i> Abierta ahora</span>
+      <mat-card class="cs-card ejemplo flota aparece">
+        <mat-card-content>
+          <p class="rotulo-ejemplo">Ejemplo de resultado</p>
+          <div class="cabecera">
+            <span class="icono"><mat-icon>medication</mat-icon></span>
+            <div class="titulos">
+              <h3>Paracetamol 500 mg</h3>
+              <p>Caja de 100 tabletas</p>
+            </div>
+            <span class="etiqueta ok">Disponible</span>
+          </div>
+
+          <div class="mejor">
+            <div>
+              <p class="mejor-titulo"><mat-icon>emoji_events</mat-icon> Mejor precio</p>
+              <p class="mejor-farmacia">Farmacia Central · Miraflores</p>
+            </div>
+            <b class="mejor-precio texto-degradado">S/ 3.50</b>
+          </div>
+
+          <ul class="otras">
+            <li>
+              <span>Botica del Barrio <span class="gris">· Surco</span></span>
+              <span class="derecha"><span class="etiqueta ok">48 disp.</span><b>S/ 4.20</b></span>
+            </li>
+            <li>
+              <span>Salud Total <span class="gris">· San Isidro</span></span>
+              <span class="derecha"><span class="etiqueta poco">Quedan 6</span><b>S/ 4.90</b></span>
+            </li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</section>
+
+<!-- Cómo funciona -->
+<section class="seccion">
+  <h2>Encuentra tu medicamento en tres pasos</h2>
+  <p class="seccion-bajada">Sin llamadas ni vueltas: compara antes de salir de casa.</p>
+  <div class="pasos">
+    @for (p of pasos; track p.titulo) {
+      <mat-card class="cs-card con-hover paso">
+        <mat-card-content>
+          <span class="icono"><mat-icon>{{ p.icono }}</mat-icon></span>
+          <h3>{{ p.titulo }}</h3>
+          <p>{{ p.texto }}</p>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</section>
+
+<!-- Beneficios -->
+<section class="seccion fondo-gris" id="beneficios">
+  <div class="interior">
+    <h2>Todo lo que necesitas para comprar mejor</h2>
+    <p class="seccion-bajada">Conectamos a las personas con las farmacias a través de transparencia y tecnología.</p>
+    <div class="beneficios">
+      @for (b of beneficios; track b.titulo) {
+        <mat-card class="cs-card con-hover beneficio">
+          <mat-card-content>
+            <span class="icono"><mat-icon>{{ b.icono }}</mat-icon></span>
+            <h3>{{ b.titulo }}</h3>
+            <p>{{ b.texto }}</p>
+            <ul class="checks">
+              @for (x of b.puntos; track x) {
+                <li><mat-icon>check_circle</mat-icon> {{ x }}</li>
+              }
+            </ul>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Para clientes -->
+<section class="seccion" id="pacientes">
+  <div class="interior dos-col">
+    <div>
+      <h2 class="izq">Para <span class="texto-degradado">clientes</span></h2>
+      <p class="lead">Toma el control de tus compras de salud con información clara y herramientas pensadas para ti.</p>
+      <div class="ventajas">
+        @for (v of ventajasPaciente; track v.titulo) {
+          <div class="ventaja">
+            <span class="icono"><mat-icon>{{ v.icono }}</mat-icon></span>
+            <div>
+              <h3>{{ v.titulo }}</h3>
+              <p>{{ v.texto }}</p>
+            </div>
+          </div>
+        }
+      </div>
+      @if (!panel()) {
+        <a mat-flat-button class="degradado grande" routerLink="/registro">
+          <mat-icon>arrow_forward</mat-icon>
+          Regístrate ahora
+        </a>
+      }
+    </div>
+
+    <div class="panel-gris">
+      <div class="cifras">
+        @for (c of cifrasPaciente; track c.texto) {
+          <div class="cifra">
+            <b class="texto-degradado">{{ c.valor }}</b>
+            <span>{{ c.texto }}</span>
+          </div>
+        }
+      </div>
+      <figure class="testimonio">
+        <div class="persona">
+          <img src="/images/home/usuario1.png" alt="" width="48" height="48" />
+          <div>
+            <b>Ernesto Ramirez</b>
+            <span>Cliente desde 2023</span>
+          </div>
+          <span class="estrellas" aria-label="5 de 5 estrellas">★★★★★</span>
+        </div>
+        <blockquote>
+          “Encontré mi medicamento más barato en dos clics. Ahorré más de S/ 20 en mi última compra y ya sabía que
+          había stock.”
+        </blockquote>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- Para farmacias -->
+<section class="seccion fondo-gris" id="farmacias">
+  <div class="interior dos-col invertida">
+    <div class="panel-blanco">
+      @for (m of metricasFarmacia; track m.texto) {
+        <div class="metrica" [class]="m.color">
+          <div>
+            <span>{{ m.texto }}</span>
+            <b>{{ m.valor }}</b>
+          </div>
+          <span class="icono-m"><mat-icon>{{ m.icono }}</mat-icon></span>
+        </div>
+      }
+    </div>
+
+    <div>
+      <h2 class="izq">Para <span class="texto-degradado">farmacias</span></h2>
+      <p class="lead">Haz crecer tu negocio, aumenta tu visibilidad y atrae más clientes con nuestra plataforma.</p>
+      <div class="ventajas">
+        @for (v of ventajasFarmacia; track v.titulo) {
+          <div class="ventaja">
+            <span class="icono verde"><mat-icon>{{ v.icono }}</mat-icon></span>
+            <div>
+              <h3>{{ v.titulo }}</h3>
+              <p>{{ v.texto }}</p>
+            </div>
+          </div>
+        }
+      </div>
+      @if (!panel()) {
+        <a mat-flat-button class="degradado grande" routerLink="/registro">
+          <mat-icon>storefront</mat-icon>
+          Registrar mi farmacia
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Confianza -->
+<section class="seccion" id="confianza">
+  <div class="interior">
+    <h2>Farmacias que ya confían en nosotros</h2>
+    <div class="logos">
+      @for (c of confianza; track c.nombre) {
+        <div class="logo-farmacia">
+          <img [src]="'/images/home/' + c.logo + '.png'" alt="" width="32" height="32" />
+          <span>{{ c.nombre }}</span>
+        </div>
+      }
+      <div class="logo-farmacia total">+100 farmacias</div>
+    </div>
+  </div>
+</section>
+
+<!-- Preguntas frecuentes -->
+<section class="seccion" id="faq">
+  <div class="interior angosto">
+    <h2>Preguntas frecuentes</h2>
+    <p class="seccion-bajada">Lo que más nos preguntan antes de empezar.</p>
+    @for (q of preguntas; track q.p) {
+      <details class="pregunta">
+        <summary>{{ q.p }}<mat-icon>expand_more</mat-icon></summary>
+        <p>{{ q.r }}</p>
+      </details>
+    }
+  </div>
+</section>
+
+<!-- Invitación a las farmacias -->
+<section class="seccion">
+  <div class="banda">
+    <div>
+      <h2>¿Tienes una farmacia?</h2>
+      <p>Publica tus ofertas y llega a las personas que están buscando tus productos.</p>
+    </div>
+    @if (!panel()) {
+      <a mat-flat-button class="boton-blanco grande" routerLink="/registro">
+        <mat-icon>storefront</mat-icon>
+        Registrar mi farmacia
+      </a>
+    }
+  </div>
+</section>

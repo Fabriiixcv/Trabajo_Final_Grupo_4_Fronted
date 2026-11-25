@@ -1,0 +1,210 @@
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatCard, MatCardActions, MatCardContent } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatChip, MatChipAvatar, MatChipSet } from '@angular/material/chips';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormField, MatLabel, MatPrefix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MedicamentoBusqueda } from '../../model/medicamento';
+import { Oferta } from '../../model/oferta';
+import { AuthService } from '../../services/auth.service';
+import { FavoritoService } from '../../services/favorito-service';
+import { MedicamentoService } from '../../services/medicamento-service';
+import { OfertaService } from '../../services/oferta-service';
+import { claseStock, mensajeError, textoStock } from '../../utils/utilidades';
+import { ComparacionDialogComponent } from '../comparacion-dialog-component/comparacion-dialog-component';
+import { MedicamentoDetalleDialogComponent } from '../medicamento-detalle-dialog-component/medicamento-detalle-dialog-component';
+
+// Buscar y comparar medicamentos (HU35, HU26, HU23, HU48, HU49, HU03)
+@Component({
+  imports: [
+    CurrencyPipe,
+    ReactiveFormsModule,
+    RouterLink,
+    MatAnchor,
+    MatButton,
+    MatIconButton,
+    MatCard,
+    MatCardContent,
+    MatCardActions,
+    MatCheckbox,
+    MatChip,
+    MatChipAvatar,
+    MatChipSet,
+    MatProgressBar,
+    MatTooltip,
+    MatFormField,
+    MatLabel,
+    MatPrefix,
+    MatInput,
+    MatIcon,
+  ],
+  selector: 'app-cliente-buscar-component',
+  styleUrl: './cliente-buscar-component.css',
+  templateUrl: './cliente-buscar-component.html',
+})
+export class ClienteBuscarComponent implements OnInit {
+  fb: FormBuilder = inject(FormBuilder);
+  auth: AuthService = inject(AuthService);
+  medicamentoService: MedicamentoService = inject(MedicamentoService);
+  favoritoService: FavoritoService = inject(FavoritoService);
+  ofertaService: OfertaService = inject(OfertaService);
+  route: ActivatedRoute = inject(ActivatedRoute);
+  dialog: MatDialog = inject(MatDialog);
+  snack: MatSnackBar = inject(MatSnackBar);
+
+  form = this.fb.nonNullable.group({ nombre: [''] });
+  sugerencias = ['Paracetamol', 'Ibuprofeno', 'Amoxicilina', 'Loratadina'];
+
+  resultados = signal<MedicamentoBusqueda[] | null>(null); // null = todavía no buscó
+  favoritos = signal<Set<number>>(new Set());
+  seleccionados = signal<Set<number>>(new Set());
+  buscando = signal(false);
+  destacadas = signal<Oferta[]>([]); // las ofertas más baratas, para la portada
+
+  claseStock = claseStock;
+  textoStock = textoStock;
+
+  // Tarjetas de acceso rápido bajo el buscador
+  accesos = [
+    {
+      icono: 'local_offer',
+      titulo: 'Ofertas de hoy',
+      texto: 'Mira los precios más bajos que publicaron las farmacias.',
+      boton: 'Ver ofertas',
+      ruta: '/cliente/ofertas',
+      color: 'azul',
+    },
+    {
+      icono: 'store',
+      titulo: 'Farmacias cerca de ti',
+      texto: 'Busca por distrito, revisa el horario y abre la ruta en el mapa.',
+      boton: 'Ver farmacias',
+      ruta: '/cliente/farmacias',
+      color: 'morado',
+    },
+    {
+      icono: 'favorite',
+      titulo: 'Tus favoritos',
+      texto: 'Vuelve rápido a los medicamentos y farmacias que guardaste.',
+      boton: 'Ir a favoritos',
+      ruta: '/cliente/favoritos',
+      color: 'verde',
+    },
+  ];
+
+  saludo = (this.auth.sesion()?.nombre ?? '').split(' ')[0];
+
+  private get idCliente(): number {
+    return this.auth.sesion()?.idCliente ?? 0;
+  }
+
+  ngOnInit() {
+    this.cargarFavoritos();
+    this.cargarDestacadas();
+    // Viene de Favoritos u Ofertas con ?q=nombre: busca de una vez
+    const q = this.route.snapshot.queryParamMap.get('q');
+    if (q) this.sugerir(q);
+  }
+
+  // GET /api/ofertas -> las 6 más baratas (si falla, simplemente no se muestran)
+  cargarDestacadas() {
+    this.ofertaService.listar().subscribe({
+      next: (lista) => this.destacadas.set([...lista].sort((a, b) => a.precio - b.precio).slice(0, 6)),
+      error: () => this.destacadas.set([]),
+    });
+  }
+
+  cargarFavoritos() {
+    this.favoritoService.medicamentos(this.idCliente).subscribe({
+      next: (lista) => this.favoritos.set(new Set(lista.map((m) => m.id))),
+      error: (e) => this.avisar(mensajeError(e)),
+    });
+  }
+
+  // GET /api/medicamentos/buscar?nombre=
+  buscar() {
+    const nombre = this.form.getRawValue().nombre.trim();
+    if (!nombre) {
+      this.avisar('Escribe el nombre de un medicamento');
+      return;
+    }
+    this.buscando.set(true);
+    this.medicamentoService.buscar(nombre).subscribe({
+      next: (lista) => {
+        this.resultados.set(lista);
+        this.buscando.set(false);
+      },
+      error: (e) => {
+        this.buscando.set(false);
+        this.avisar(mensajeError(e));
+      },
+    });
+  }
+
+  sugerir(nombre: string) {
+    this.form.setValue({ nombre });
+    this.buscar();
+  }
+
+  // Agrega o quita el medicamento de favoritos
+  toggleFavorito(id: number) {
+    const esFavorito = this.favoritos().has(id);
+    const peticion = esFavorito
+      ? this.favoritoService.quitarMedicamento(this.idCliente, id)
+      : this.favoritoService.agregarMedicamento(this.idCliente, id);
+    peticion.subscribe({
+      next: () => {
+        const nuevo = new Set(this.favoritos());
+        if (esFavorito) nuevo.delete(id);
+        else nuevo.add(id);
+        this.favoritos.set(nuevo);
+        this.avisar(esFavorito ? 'Quitado de favoritos' : 'Guardado en favoritos');
+      },
+      error: (e) => this.avisar(mensajeError(e)),
+    });
+  }
+
+  toggleComparar(id: number, marcado: boolean) {
+    const nuevo = new Set(this.seleccionados());
+    if (marcado) nuevo.add(id);
+    else nuevo.delete(id);
+    this.seleccionados.set(nuevo);
+  }
+
+  limpiar() {
+    this.seleccionados.set(new Set());
+  }
+
+  comparar() {
+    if (this.seleccionados().size < 2) {
+      this.avisar('Selecciona al menos dos medicamentos para comparar');
+      return;
+    }
+    this.dialog.open(ComparacionDialogComponent, {
+      width: '720px',
+      maxWidth: '95vw',
+      data: { ids: [...this.seleccionados()] },
+    });
+  }
+
+  verDetalle(id: number) {
+    this.dialog.open(MedicamentoDetalleDialogComponent, {
+      width: '720px',
+      maxWidth: '95vw',
+      data: { id },
+    });
+  }
+
+  private avisar(mensaje: string) {
+    this.snack.open(mensaje, 'OK', { duration: 3000 });
+  }
+}

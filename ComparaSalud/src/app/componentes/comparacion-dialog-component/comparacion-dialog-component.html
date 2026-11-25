@@ -1,0 +1,56 @@
+<div class="dialogo-cab">
+  <span class="icono"><mat-icon>balance</mat-icon></span>
+  <div class="titulos">
+    <h2 mat-dialog-title>Comparación de medicamentos</h2>
+    <p>Dónde conviene comprar cada uno</p>
+  </div>
+  <button mat-icon-button type="button" mat-dialog-close aria-label="Cerrar"><mat-icon>close</mat-icon></button>
+</div>
+
+<mat-dialog-content>
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  } @else if (!resultado()) {
+    <mat-progress-bar mode="indeterminate" />
+  } @else {
+    @for (m of resultado(); track m.id) {
+      <section class="bloque">
+        <p class="nombre">
+          {{ m.nombreComercial || m.nombre }} <span class="gris">· {{ m.nombre }}</span>
+        </p>
+        @if (m.ofertaMasBarata; as barata) {
+          <p class="barata">
+            <mat-icon class="trofeo">emoji_events</mat-icon>
+            <span>
+              Más barata: <b class="texto-degradado">{{ barata.precio | currency: 'PEN' : 'S/ ' }}</b> en
+              {{ barata.nombreFarmacia }} ({{ barata.distrito }})
+            </span>
+          </p>
+          <div class="tabla-scroll">
+            <table class="tabla">
+              <thead>
+                <tr><th>Farmacia</th><th>Distrito</th><th>Precio</th><th>Stock</th></tr>
+              </thead>
+              <tbody>
+                @for (o of m.ofertas; track o.id) {
+                  <tr>
+                    <td>{{ o.nombreFarmacia }}</td>
+                    <td>{{ o.distrito }}</td>
+                    <td><b>{{ o.precio | currency: 'PEN' : 'S/ ' }}</b></td>
+                    <td><span class="etiqueta" [class]="claseStock(o.stock)">{{ textoStock(o.stock) }}</span></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <p class="gris">Sin ofertas</p>
+        }
+      </section>
+    }
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

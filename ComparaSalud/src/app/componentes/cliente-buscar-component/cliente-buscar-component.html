@@ -1,0 +1,205 @@
+<div class="pagina aparece">
+  <!-- Zona de bienvenida con el buscador (formulario Angular Material) -->
+  <mat-card class="cs-card hero fondo-hero">
+    <mat-card-content class="hero-grid">
+      <div class="hero-texto">
+      <p class="saludo"><mat-icon>health_and_safety</mat-icon> ¡Hola, {{ saludo }}!</p>
+      <h1>¿Qué medicamento <span class="texto-degradado">buscas hoy</span>?</h1>
+      <p class="subtitulo">Mira qué farmacias lo tienen y encuentra el mejor precio.</p>
+
+      <form [formGroup]="form" class="buscador" (ngSubmit)="buscar()">
+        <mat-form-field appearance="outline" class="campo" subscriptSizing="dynamic">
+          <mat-label>Medicamento</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput formControlName="nombre" placeholder="Ej. paracetamol, ibuprofeno, amoxicilina…" />
+        </mat-form-field>
+        <button mat-flat-button type="submit" class="degradado boton-buscar" [disabled]="buscando()">
+          <mat-icon>search</mat-icon> Buscar
+        </button>
+      </form>
+
+      <div class="sugerencias">
+        <span>Prueba con:</span>
+        <mat-chip-set aria-label="Medicamentos sugeridos">
+          @for (s of sugerencias; track s) {
+            <mat-chip class="sugerencia" (click)="sugerir(s)">
+              <mat-icon matChipAvatar>medication</mat-icon>
+              {{ s }}
+            </mat-chip>
+          }
+        </mat-chip-set>
+      </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <span class="adorno grad cuadro-a"></span>
+        <span class="adorno mor cuadro-b"></span>
+        <div class="medalla flota"><mat-icon>medication</mat-icon></div>
+        <span class="chip-flota chip-1"><mat-icon>emoji_events</mat-icon> Mejor precio</span>
+        <span class="chip-flota chip-2"><mat-icon>inventory_2</mat-icon> Stock al día</span>
+        <span class="chip-flota chip-3"><mat-icon>location_on</mat-icon> Cerca de ti</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  @if (buscando()) {
+    <mat-progress-bar mode="indeterminate" class="progreso" />
+  }
+
+  @if (resultados(); as lista) {
+    @if (lista.length) {
+      <div class="encabezado-res">
+        <h2>Resultados de tu búsqueda</h2>
+        <span class="etiqueta ok">{{ lista.length }} {{ lista.length === 1 ? 'medicamento' : 'medicamentos' }}</span>
+      </div>
+      <div class="rejilla">
+        @for (m of lista; track m.id) {
+          <mat-card class="cs-card con-hover tarjeta">
+            <mat-card-content>
+              <div class="cabecera">
+                <span class="icono"><mat-icon>medication</mat-icon></span>
+                <div class="titulos">
+                  <h3>{{ m.nombreComercial || m.nombre }}</h3>
+                  <p>{{ m.nombre }}</p>
+                </div>
+                <button
+                  mat-icon-button
+                  type="button"
+                  [matTooltip]="favoritos().has(m.id) ? 'Quitar de favoritos' : 'Guardar en favoritos'"
+                  [attr.aria-label]="favoritos().has(m.id) ? 'Quitar de favoritos' : 'Guardar en favoritos'"
+                  (click)="toggleFavorito(m.id)"
+                >
+                  <mat-icon [class.relleno]="favoritos().has(m.id)" [class.favorito-activo]="favoritos().has(m.id)">favorite</mat-icon>
+                </button>
+              </div>
+
+              @if (m.farmacias[0]; as mejor) {
+                <div class="mejor">
+                  <div>
+                    <p class="mejor-titulo"><mat-icon>emoji_events</mat-icon> Mejor precio</p>
+                    <p class="mejor-farmacia">{{ mejor.nombreFarmacia }} · {{ mejor.distrito }}</p>
+                  </div>
+                  <b class="mejor-precio texto-degradado">{{ mejor.precio | currency: 'PEN' : 'S/ ' }}</b>
+                </div>
+
+                @if (m.farmacias.length > 1) {
+                  <p class="otras">También disponible en</p>
+                  <ul class="lista-ofertas">
+                    @for (o of m.farmacias.slice(1); track o.id) {
+                      <li>
+                        <span class="nombre-farmacia"><mat-icon>store</mat-icon>{{ o.nombreFarmacia }} <span class="gris">· {{ o.distrito }}</span></span>
+                        <span class="derecha">
+                          <span class="etiqueta" [class]="claseStock(o.stock)">{{ textoStock(o.stock) }}</span>
+                          <b>{{ o.precio | currency: 'PEN' : 'S/ ' }}</b>
+                        </span>
+                      </li>
+                    }
+                  </ul>
+                }
+              } @else {
+                <div class="sin-ofertas"><mat-icon>sentiment_dissatisfied</mat-icon> Sin ofertas con stock por ahora</div>
+              }
+            </mat-card-content>
+
+            <mat-card-actions class="acciones">
+              <button mat-button type="button" class="ver-detalle" (click)="verDetalle(m.id)">
+                <mat-icon>info</mat-icon> Ver detalle
+              </button>
+              <mat-checkbox
+                class="comparar"
+                [class.marcado]="seleccionados().has(m.id)"
+                [checked]="seleccionados().has(m.id)"
+                (change)="toggleComparar(m.id, $event.checked)"
+              >
+                Comparar
+              </mat-checkbox>
+            </mat-card-actions>
+          </mat-card>
+        }
+      </div>
+    } @else {
+      <div class="vacio">
+        <mat-icon>sentiment_dissatisfied</mat-icon>
+        <p>No encontramos medicamentos con ese nombre. Prueba con otra palabra.</p>
+      </div>
+    }
+  } @else {
+    <!-- Accesos rápidos -->
+    <section class="bloque">
+      <h2 class="titulo-bloque">Todo lo que puedes hacer aquí</h2>
+      <p class="bajada-bloque">Atajos para encontrar y ahorrar más rápido.</p>
+      <div class="accesos">
+        @for (a of accesos; track a.titulo) {
+          <mat-card class="cs-card con-hover acceso" [class]="a.color">
+            <mat-card-content>
+              <span class="medallon"><mat-icon>{{ a.icono }}</mat-icon></span>
+              <h3>{{ a.titulo }}</h3>
+              <p>{{ a.texto }}</p>
+              <a mat-flat-button class="boton-blanco" [routerLink]="a.ruta">{{ a.boton }}</a>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    </section>
+
+    <!-- Ofertas destacadas (datos reales: las más baratas) -->
+    @if (destacadas().length) {
+      <section class="bloque">
+        <h2 class="titulo-bloque">Ofertas destacadas</h2>
+        <p class="bajada-bloque">Los precios más bajos publicados hoy por las farmacias.</p>
+        <div class="rejilla">
+          @for (o of destacadas(); track o.id; let i = $index) {
+            <mat-card class="cs-card con-hover oferta">
+              @if (i === 0) {
+                <span class="cinta"><mat-icon>emoji_events</mat-icon> Más barato</span>
+              }
+              <mat-card-content>
+                <div class="cabecera">
+                  <span class="icono"><mat-icon>medication</mat-icon></span>
+                  <div class="titulos">
+                    <h3>{{ o.nombreMedicamento }}</h3>
+                    <p><mat-icon class="mini">store</mat-icon> {{ o.nombreFarmacia }} · {{ o.distrito }}</p>
+                  </div>
+                </div>
+                <div class="pie-oferta">
+                  <b class="precio-grande texto-degradado">{{ o.precio | currency: 'PEN' : 'S/ ' }}</b>
+                  <span class="etiqueta" [class]="claseStock(o.stock)">{{ textoStock(o.stock) }}</span>
+                </div>
+                <button mat-stroked-button type="button" class="ver-oferta" (click)="sugerir(o.nombreMedicamento)">
+                  <mat-icon>search</mat-icon> Ver en todas las farmacias
+                </button>
+              </mat-card-content>
+            </mat-card>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Consejo -->
+    <section class="bloque">
+      <div class="banda-consejo">
+        <div>
+          <h2>Compara medicamentos lado a lado</h2>
+          <p>Busca dos o más, marca “Comparar” en cada tarjeta y mira precios y stock en una sola tabla.</p>
+        </div>
+        <span class="medallon grande"><mat-icon>balance</mat-icon></span>
+      </div>
+    </section>
+
+    <div class="vacio">
+      <mat-icon>search</mat-icon>
+      <p>Escribe el nombre de un medicamento o toca una sugerencia para ver sus precios.</p>
+    </div>
+  }
+</div>
+
+<!-- Barra de comparación (HU26) -->
+@if (seleccionados().size) {
+  <div class="barra-comparar aparece" role="status">
+    <span class="conteo"><mat-icon>balance</mat-icon> <b>{{ seleccionados().size }}</b> seleccionado(s)</span>
+    <span class="botones">
+      <button mat-button type="button" class="limpiar" (click)="limpiar()"><mat-icon>close</mat-icon> Limpiar</button>
+      <button mat-flat-button type="button" class="degradado" (click)="comparar()"><mat-icon>balance</mat-icon> Comparar</button>
+    </span>
+  </div>
+}
